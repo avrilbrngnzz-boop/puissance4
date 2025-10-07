@@ -1,0 +1,26 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  background-color: #f0f0f0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 60px);
+  grid-template-rows: repeat(6, 60px);
+  gap: 5px;
+  margin: 20px auto;
+  background-color: #0074D9;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.cell {
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.cell.R { background-color: red; }
+.cell.J { background-color: yellow; }

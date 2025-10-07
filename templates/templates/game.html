@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Puissance 4</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>Puissance 4</h1>
+  <p>Tour de : {{if eq .Turn 0}}{{.Player1}}{{else}}{{.Player2}}{{end}}</p>
+
+  <div class="grid">
+    {{range .Grid}}
+      {{range .}}
+        <div class="cell {{.}}"></div>
+      {{end}}
+    {{end}}
+  </div>
+
+  <form method="POST" action="/play">
+    <label for="column">Choisis une colonne :</label>
+    <select name="column" id="column">
+      {{range $i := (slice 0 1 2 3 4 5 6)}}
+        <option value="{{$i}}">Colonne {{$i | add1}}</option>
+      {{end}}
+    </select>
+    <button type="submit">Jouer</button>
+  </form>
+</body>
+</html>

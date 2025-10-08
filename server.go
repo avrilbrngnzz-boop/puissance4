@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 )
 
 type Game struct {
@@ -19,7 +21,9 @@ func main() {
 	http.HandleFunc("/start", startGame)
 	http.HandleFunc("/play", playMove)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	fmt.Println("Serveur lancé sur http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
+
 }
 
 func startPage(w http.ResponseWriter, r *http.Request) {
@@ -55,6 +59,33 @@ func startGame(w http.ResponseWriter, r *http.Request) {
 }
 
 func playMove(w http.ResponseWriter, r *http.Request) {
+	if currentGame == nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	if r.Method == http.MethodPost {
+		columnStr := r.FormValue("column")
+		column, err := strconv.Atoi(columnStr)
+		if err != nil || column < 0 || column > 6 {
+			http.Error(w, "Colonne invalide", http.StatusBadRequest)
+			return
+		}
+
+		for i := len(currentGame.Grid) - 1; i >= 0; i-- {
+			if currentGame.Grid[i][column] == " " {
+				if currentGame.Turn == 0 {
+					currentGame.Grid[i][column] = "X"
+				} else {
+					currentGame.Grid[i][column] = "O"
+				}
+				currentGame.Turn = 1 - currentGame.Turn
+				break
+			}
+		}
+	}
+
+	// 💡 Manquait : afficher la grille
 	tmpl := template.Must(template.ParseFiles("templates/game.html"))
 	tmpl.Execute(w, currentGame)
 }

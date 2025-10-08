@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Puissance 4</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>Tour de : {{if eq .Turn 0}}{{.Player1}}{{else}}{{.Player2}}{{end}}</h1>
+
+  <table class="grid">
+    {{range $i, $row := .Grid}}
+      <tr>
+        {{range $j, $cell := $row}}
+          <td class="cell {{.}}">
+            {{if eq $cell " "}}
+              <form method="POST" action="/play">
+                <input type="hidden" name="column" value="{{$j}}">
+                <button class="cell-button" type="submit"></button>
+              </form>
+            {{else}}
+              {{.}}
+            {{end}}
+          </td>
+        {{end}}
+      </tr>
+    {{end}}
+  </table>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <title>Démarrer Puissance 4</title>
+  </head>
+  <body>
+    <h1>Entrez les noms des joueurs</h1>
+      <form method="POST" action="/start">
+        <label>Joueur 1 :</label><br>
+        <input type="text" name="player1"><br><br>
+
+        <label>Joueur 2 :</label><br>
+        <input type="text" name="player2"><br><br>
+    
+      <p>Commencer la partie en choisissant la difficulté</p>
+      <button type="submit">Facile</button>
+      <button type="submit">Moyen</button>
+      <button type="submit">Difficile</button>
+  </body>
+</html>

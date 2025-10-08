@@ -85,7 +85,7 @@ func playMove(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// 💡 Manquait : afficher la grille
+	
 	tmpl := template.Must(template.ParseFiles("templates/game.html"))
 	tmpl.Execute(w, currentGame)
 }

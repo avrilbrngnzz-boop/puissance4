@@ -16,16 +16,6 @@ type Game struct {
 
 var currentGame *Game
 
-func main() {
-	http.HandleFunc("/", startPage)
-	http.HandleFunc("/start", startGame)
-	http.HandleFunc("/play", playMove)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	fmt.Println("Serveur lancé sur http://localhost:8080")
-	http.ListenAndServe(":8080", nil)
-
-}
-
 func startPage(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("templates/start.html"))
 	tmpl.Execute(w, nil)
@@ -85,7 +75,15 @@ func playMove(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	
 	tmpl := template.Must(template.ParseFiles("templates/game.html"))
 	tmpl.Execute(w, currentGame)
+}
+
+func main() {
+	http.HandleFunc("/", startPage)
+	http.HandleFunc("/start", startGame)
+	http.HandleFunc("/play", playMove)
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	fmt.Println("Serveur lancé sur http://localhost:8080")
+	http.ListenAndServe(":8080", nil)
 }

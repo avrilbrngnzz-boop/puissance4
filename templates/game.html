@@ -9,23 +9,23 @@
   <h1>Tour de : {{if eq .Turn 0}}{{.Player1}}{{else}}{{.Player2}}{{end}}</h1>
 
   <table class="grid">
+    <tr>
+      {{range $j, $_ := index .Grid 0}}
+        <td>
+          <form method="POST" action="/play">
+             <input type="hidden" name="column" value="{{$j}}">
+              <button class="cell-button" type="submit"></button>
+           </form>
+        </td>  
+       {{end}}
+    </tr>     
     {{range $i, $row := .Grid}}
-      <tr>
-        {{range $j, $cell := $row}}
-          <td class="cell {{.}}">
-            {{if eq $cell " "}}
-              <form method="POST" action="/play">
-                <input type="hidden" name="column" value="{{$j}}">
-                <button class="cell-button" type="submit"></button>
-              </form>
-            {{else}}
-              {{.}}
-            {{end}}
-          </td>
-        {{end}}
-      </tr>
+    <tr>
+      {{range $j, $cell := $row}}
+      <td class="cell{{if $cell}} {{ $cell }}{{end}}"></td>
+          {{end}}
+        </tr>
     {{end}}
   </table>
-
 </body>
 </html>

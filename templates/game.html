@@ -10,7 +10,7 @@
 
   <table class="grid">
     <tr>
-      {{range $j, $_ := index .Grid 0}}
+      {{range $j := seq 0 6}}
         <td>
           <form method="POST" action="/play">
              <input type="hidden" name="column" value="{{$j}}">

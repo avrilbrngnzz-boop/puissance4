@@ -61,6 +61,7 @@ func playMove(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Colonne invalide", http.StatusBadRequest)
 			return
 		}
+		fmt.Println("Colonne jouée :", column)
 
 		for i := len(currentGame.Grid) - 1; i >= 0; i-- {
 			if currentGame.Grid[i][column] == "" {
@@ -75,8 +76,16 @@ func playMove(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/game.html"))
+	tmpl := template.Must(template.New("game.html").Funcs(template.FuncMap{"seq": seq}).ParseFiles("templates/game.html"))
 	tmpl.Execute(w, currentGame)
+}
+
+func seq(start, end int) []int {
+	s := make([]int, end-start+1)
+	for i := range s {
+		s[i] = start + i
+	}
+	return s
 }
 
 func main() {

@@ -34,7 +34,7 @@ func startGame(w http.ResponseWriter, r *http.Request) {
 	for i := range grid {
 		grid[i] = make([]string, 7)
 		for j := range grid[i] {
-			grid[i][j] = " "
+			grid[i][j] = ""
 		}
 	}
 
@@ -63,7 +63,7 @@ func playMove(w http.ResponseWriter, r *http.Request) {
 		}
 
 		for i := len(currentGame.Grid) - 1; i >= 0; i-- {
-			if currentGame.Grid[i][column] == " " {
+			if currentGame.Grid[i][column] == "" {
 				if currentGame.Turn == 0 {
 					currentGame.Grid[i][column] = "X"
 				} else {

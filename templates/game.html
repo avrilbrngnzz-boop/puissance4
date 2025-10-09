@@ -22,7 +22,7 @@
     {{range $i, $row := .Grid}}
     <tr>
       {{range $j, $cell := $row}}
-      <td class="cell{{if $cell}} {{ $cell }}{{end}}"></td>
+      <td class="cell {{ $cell }}"></td>
           {{end}}
         </tr>
     {{end}}

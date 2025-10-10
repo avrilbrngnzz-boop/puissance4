@@ -11,10 +11,66 @@ type Game struct {
 	Player1 string
 	Player2 string
 	Grid    [][]string
-	Turn    int // 0 = Player1, 1 = Player2
+	Turn    int
+	Winner  string
 }
 
 var currentGame *Game
+
+func seq(start, end int) []int {
+	s := make([]int, end-start+1)
+	for i := range s {
+		s[i] = start + i
+	}
+	return s
+}
+
+func checkWin(grid [][]string, symbol string) bool {
+	rows := len(grid)
+	cols := len(grid[0])
+
+	// Horizontal
+	for i := 0; i < rows; i++ {
+		for j := 0; j <= cols-4; j++ {
+			if grid[i][j] == symbol && grid[i][j+1] == symbol &&
+				grid[i][j+2] == symbol && grid[i][j+3] == symbol {
+				return true
+			}
+		}
+	}
+
+	// Vertical
+	for i := 0; i <= rows-4; i++ {
+		for j := 0; j < cols; j++ {
+			if grid[i][j] == symbol && grid[i+1][j] == symbol &&
+				grid[i+2][j] == symbol && grid[i+3][j] == symbol {
+				return true
+			}
+		}
+	}
+
+	// Diagonale descendante
+	for i := 0; i <= rows-4; i++ {
+		for j := 0; j <= cols-4; j++ {
+			if grid[i][j] == symbol && grid[i+1][j+1] == symbol &&
+				grid[i+2][j+2] == symbol && grid[i+3][j+3] == symbol {
+				return true
+			}
+		}
+	}
+
+	// Diagonale montante
+	for i := 3; i < rows; i++ {
+		for j := 0; j <= cols-4; j++ {
+			if grid[i][j] == symbol && grid[i-1][j+1] == symbol &&
+				grid[i-2][j+2] == symbol && grid[i-3][j+3] == symbol {
+				return true
+			}
+		}
+	}
+
+	return false
+}
 
 func startPage(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("templates/start.html"))
@@ -43,6 +99,7 @@ func startGame(w http.ResponseWriter, r *http.Request) {
 		Player2: player2,
 		Grid:    grid,
 		Turn:    0,
+		Winner:  "",
 	}
 
 	http.Redirect(w, r, "/play", http.StatusSeeOther)
@@ -54,21 +111,34 @@ func playMove(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.Method == http.MethodPost {
+	if r.Method == http.MethodPost && currentGame.Winner == "" {
 		columnStr := r.FormValue("column")
 		column, err := strconv.Atoi(columnStr)
 		if err != nil || column < 0 || column > 6 {
 			http.Error(w, "Colonne invalide", http.StatusBadRequest)
 			return
 		}
-		fmt.Println("Colonne jouée :", column)
+
+		symbol := ""
+		if currentGame.Turn == 0 {
+			symbol = "X"
+		} else {
+			symbol = "O"
+		}
 
 		for i := len(currentGame.Grid) - 1; i >= 0; i-- {
 			if currentGame.Grid[i][column] == "" {
-				if currentGame.Turn == 0 {
-					currentGame.Grid[i][column] = "X"
-				} else {
-					currentGame.Grid[i][column] = "O"
+				currentGame.Grid[i][column] = symbol
+				if checkWin(currentGame.Grid, symbol) {
+					if currentGame.Winner == "" && isDraw(currentGame.Grid) {
+						currentGame.Winner = "Égalité"
+					}
+
+					if symbol == "X" {
+						currentGame.Winner = currentGame.Player1
+					} else {
+						currentGame.Winner = currentGame.Player2
+					}
 				}
 				currentGame.Turn = 1 - currentGame.Turn
 				break
@@ -76,16 +146,21 @@ func playMove(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	tmpl := template.Must(template.New("game.html").Funcs(template.FuncMap{"seq": seq}).ParseFiles("templates/game.html"))
+	tmpl := template.Must(template.New("game.html").Funcs(template.FuncMap{
+		"seq": seq,
+	}).ParseFiles("templates/game.html"))
+
 	tmpl.Execute(w, currentGame)
 }
-
-func seq(start, end int) []int {
-	s := make([]int, end-start+1)
-	for i := range s {
-		s[i] = start + i
+func isDraw(grid [][]string) bool {
+	for i := range grid {
+		for j := range grid[i] {
+			if grid[i][j] == "" {
+				return false
+			}
+		}
 	}
-	return s
+	return true
 }
 
 func main() {

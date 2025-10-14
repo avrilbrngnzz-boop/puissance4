@@ -112,3 +112,19 @@ button.cell-button:hover {
   box-shadow: 0 0 15px rgba(255, 200, 0, 0.5);
   animation: pop 0.5s ease-out;
 }
+
+.back-button {
+  margin-top: 2rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1.1rem;
+  background-color: #555;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #777;
+}

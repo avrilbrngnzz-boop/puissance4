@@ -6,22 +6,19 @@
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+  {{define "cellClass"}}
+    {{if eq . "X"}}X{{else if eq . "O"}}O{{else}}empty{{end}}
+  {{end}}
+
   {{if eq .Winner "Égalité"}}
-  <div class="draw-banner">
-    🤝 Match nul ! La grille est pleine.
-  </div>
-{{else if .Winner}}
-  <div class="winner-banner">
-    🎉 Victoire de {{.Winner}} ! 🎉
-  </div>
-{{else}}
-  <h1>Tour de : {{if eq .Turn 0}}{{.Player1}}{{else}}{{.Player2}}{{end}}</h1>
-{{end}}
-
-
+    <div class="draw-banner">🤝 Match nul ! La grille est pleine.</div>
+  {{else if .Winner}}
+    <div class="winner-banner">🎉 Victoire de {{.Winner}} ! 🎉</div>
+  {{else}}
+    <h1>Tour de : {{if eq .Turn 0}}{{.Player1}}{{else}}{{.Player2}}{{end}}</h1>
+  {{end}}
 
   <table class="grid">
-    <!-- Ligne des boutons -->
     <tr>
       {{range $j := seq 0 6}}
         <td>
@@ -32,15 +29,16 @@
         </td>
       {{end}}
     </tr>
-
-    <!-- Grille de jeu -->
     {{range $i, $row := .Grid}}
       <tr>
         {{range $j, $cell := $row}}
-          <td class="cell {{ $cell }}"></td>
+          <td class="cell {{template "cellClass " $cell}}"></td>
         {{end}}
       </tr>
     {{end}}
   </table>
+  <form action ="/" method="Get">
+    <button type="submit" class="back-button">Retour</button>
+  </form>
 </body>
 </html>

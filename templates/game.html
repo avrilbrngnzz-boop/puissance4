@@ -10,17 +10,20 @@
     {{if eq . "X"}}X{{else if eq . "O"}}O{{else}}empty{{end}}
   {{end}}
 
-  {{if eq .Winner "Égalité"}}
-    <div class="draw-banner">🤝 Match nul ! La grille est pleine.</div>
-  {{else if .Winner}}
+  {{if .Winner}}
+  {{if or (eq .Winner .Player1) (eq .Winner .Player2)}}
     <div class="winner-banner">🎉 Victoire de {{.Winner}} ! 🎉</div>
   {{else}}
-    <h1>Tour de : {{if eq .Turn 0}}{{.Player1}}{{else}}{{.Player2}}{{end}}</h1>
+    <div class="draw-banner">🤝 Match nul ! La grille est pleine.</div>
   {{end}}
+{{else}}
+  <h1>Tour de : {{if eq .Turn 0}}{{.Player1}}{{else}}{{.Player2}}{{end}}</h1>
+{{end}}
+
 
   <table class="grid">
     <tr>
-      {{range $j := seq 0 6}}
+      {{range $j := seq 0 (sub (len (index .Grid 0)) 1)}}
         <td>
           <form method="POST" action="/play">
             <input type="hidden" name="column" value="{{$j}}">
@@ -32,7 +35,7 @@
     {{range $i, $row := .Grid}}
       <tr>
         {{range $j, $cell := $row}}
-          <td class="cell {{template "cellClass " $cell}}"></td>
+          <td class="cell {{template "cellClass" $cell}}"></td>
         {{end}}
       </tr>
     {{end}}

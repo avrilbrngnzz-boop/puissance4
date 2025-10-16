@@ -8,11 +8,12 @@ import (
 )
 
 type Game struct {
-	Player1 string
-	Player2 string
-	Grid    [][]string
-	Turn    int
-	Winner  string
+	Player1    string
+	Player2    string
+	Grid       [][]string
+	Turn       int
+	Winner     string
+	Difficulty string
 }
 
 var currentGame *Game
@@ -86,20 +87,32 @@ func startGame(w http.ResponseWriter, r *http.Request) {
 	player1 := r.FormValue("player1")
 	player2 := r.FormValue("player2")
 
-	grid := make([][]string, 6)
+	difficulty := r.FormValue("difficulty")
+
+	rows, cols := 6, 7 // par défaut
+	switch difficulty {
+	case "facile":
+		rows, cols = 6, 7
+	case "moyen":
+		rows, cols = 6, 9
+	case "difficile":
+		rows, cols = 7, 8
+	}
+
+	grid := make([][]string, rows)
 	for i := range grid {
-		grid[i] = make([]string, 7)
+		grid[i] = make([]string, cols)
 		for j := range grid[i] {
 			grid[i][j] = ""
 		}
 	}
-
 	currentGame = &Game{
-		Player1: player1,
-		Player2: player2,
-		Grid:    grid,
-		Turn:    0,
-		Winner:  "",
+		Player1:    player1,
+		Player2:    player2,
+		Grid:       grid,
+		Turn:       0,
+		Winner:     "",
+		Difficulty: difficulty,
 	}
 
 	http.Redirect(w, r, "/play", http.StatusSeeOther)
@@ -114,7 +127,7 @@ func playMove(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost && currentGame.Winner == "" {
 		columnStr := r.FormValue("column")
 		column, err := strconv.Atoi(columnStr)
-		if err != nil || column < 0 || column > 6 {
+		if err != nil || column < 0 || column >= len(currentGame.Grid[0]) {
 			http.Error(w, "Colonne invalide", http.StatusBadRequest)
 			return
 		}
@@ -130,16 +143,15 @@ func playMove(w http.ResponseWriter, r *http.Request) {
 			if currentGame.Grid[i][column] == "" {
 				currentGame.Grid[i][column] = symbol
 				if checkWin(currentGame.Grid, symbol) {
-					if currentGame.Winner == "" && isDraw(currentGame.Grid) {
-						currentGame.Winner = "Égalité"
-					}
-
 					if symbol == "X" {
 						currentGame.Winner = currentGame.Player1
 					} else {
 						currentGame.Winner = currentGame.Player2
 					}
+				} else if isDraw(currentGame.Grid) {
+					currentGame.Winner = "Egalité"
 				}
+
 				currentGame.Turn = 1 - currentGame.Turn
 				break
 			}
@@ -148,6 +160,7 @@ func playMove(w http.ResponseWriter, r *http.Request) {
 
 	tmpl := template.Must(template.New("game.html").Funcs(template.FuncMap{
 		"seq": seq,
+		"sub": func(a, b int) int { return a - b },
 	}).ParseFiles("templates/game.html"))
 
 	tmpl.Execute(w, currentGame)

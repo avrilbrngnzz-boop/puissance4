@@ -6,7 +6,8 @@
     <title>Démarrer Puissance 4</title>
   </head>
   <body>
-    <h1>Entrez les noms des joueurs</h1>
+    <h1>Puissance 4</h1>
+    <h2>Entrez les noms des joueurs</h2>
       <form method="POST" action="/start">
         <label>Joueur 1 :</label><br>
         <input type="text" name="player1"><br><br>
@@ -14,9 +15,13 @@
         <label>Joueur 2 :</label><br>
         <input type="text" name="player2"><br><br>
     
-      <p>Commencer la partie en choisissant la difficulté</p>
-      <button type="submit">Facile</button>
-      <button type="submit">Moyen</button>
-      <button type="submit">Difficile</button>
+      <label>Difficulté :</label>
+    <select name="difficulty" required>
+      <option value="facile">Facile (6x7)</option>
+      <option value="moyen">Moyen (6x9)</option>
+      <option value="difficile">Difficile (7x8)</option>
+    </select>
+  <button type="submit">Commencer</button>
+  </form>
   </body>
 </html>

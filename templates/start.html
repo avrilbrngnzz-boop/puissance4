@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <link rel="stylesheet" href="/static/style.css">
-    <meta charset="UTF-8">
-    <title>Démarrer Puissance 4</title>
-  </head>
-  <body>
-    <h1>Puissance 4</h1>
-    <h2>Entrez les noms des joueurs</h2>
-      <form method="POST" action="/start">
-        <label>Joueur 1 :</label><br>
-        <input type="text" name="player1"><br><br>
+<head>
+  <meta charset="UTF-8">
+  <title>Démarrer Puissance 4</title>
+  <link rel="stylesheet" href="/static/puissance4.css">
+</head>
+<body>
+  <h1>Puissance 4</h1>
+  <h2>Entrez les noms des joueurs</h2>
 
-        <label>Joueur 2 :</label><br>
-        <input type="text" name="player2"><br><br>
-    
-      <label>Difficulté :</label>
+  <form method="POST" action="/start">
+    <input type="hidden" name="force" value="1">
+
+    <label>Joueur 1 :</label><br>
+    <input type="text" name="player1" required><br><br>
+
+    <label>Joueur 2 :</label><br>
+    <input type="text" name="player2" required><br><br>
+
+    <label>Difficulté :</label><br>
     <select name="difficulty" required>
       <option value="facile">Facile (6x7)</option>
       <option value="moyen">Moyen (6x9)</option>
       <option value="difficile">Difficile (7x8)</option>
-    </select>
-  <button type="submit">Commencer</button>
+    </select><br><br>
+
+    <button type="submit">Commencer</button>
   </form>
-  </body>
+</body>
 </html>

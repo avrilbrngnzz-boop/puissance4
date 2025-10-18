@@ -2,24 +2,23 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Puissance 4test</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <title>Puissance 4</title>
+  <link rel="stylesheet" href="/static/puissance4.css">
 </head>
 <body>
-  {{define "cellClass"}}
-    {{if eq . "X"}}X{{else if eq . "O"}}O{{else}}empty{{end}}
-  {{end}}
-
   {{if .Winner}}
-  {{if or (eq .Winner .Player1) (eq .Winner .Player2)}}
-    <div class="winner-banner">🎉 Victoire de {{.Winner}} ! 🎉</div>
+    {{if or (eq .Winner .Player1) (eq .Winner .Player2)}}
+      <div class="winner-banner">🎉 Victoire de {{.Winner}} ! 🎉</div>
+    {{else}}
+      <div class="draw-banner">🤝 Match nul ! La grille est pleine.</div>
+    {{end}}
   {{else}}
-    <div class="draw-banner">🤝 Match nul ! La grille est pleine.</div>
+    <h1>Tour de : {{if eq .Turn 0}}{{.Player1}}{{else}}{{.Player2}}{{end}}</h1>
   {{end}}
-{{else}}
-  <h1>Tour de : {{if eq .Turn 0}}{{.Player1}}{{else}}{{.Player2}}{{end}}</h1>
-{{end}}
 
+  <div class="difficulty">
+    Score : {{.Player1}} {{.Player1Score}} - {{.Player2Score}} {{.Player2}}
+  </div>
 
   <table class="grid">
     <tr>
@@ -35,13 +34,18 @@
     {{range $i, $row := .Grid}}
       <tr>
         {{range $j, $cell := $row}}
-          <td class="cell {{template "cellClass" $cell}}"></td>
+          <td class="cell {{cellClass $cell}}"></td>
         {{end}}
       </tr>
     {{end}}
   </table>
-  <form action ="/" method="Get">
-    <button type="submit" class="back-button">Retour</button>
+
+  <form method="POST" action="/rematch">
+    <button type="submit" class="back-button">Revanche</button>
+  </form>
+
+  <form method="POST" action="/quit">
+    <button type="submit" class="back-button">Quitter</button>
   </form>
 </body>
 </html>

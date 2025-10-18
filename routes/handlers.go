@@ -8,7 +8,8 @@ import (
 )
 
 func StartPage(w http.ResponseWriter, r *http.Request) {
-	RenderTemplate(w, "start.html", nil)
+	tmpl := template.Must(template.ParseFiles("templates/start.html"))
+	tmpl.Execute(w, nil)
 }
 
 func StartGame(w http.ResponseWriter, r *http.Request) {
@@ -67,14 +68,12 @@ func PlayMove(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "Colonne invalide", http.StatusBadRequest)
 				return
 			}
-
 			symbol := ""
 			if models.CurrentGame.Turn == 0 {
 				symbol = "X"
 			} else {
 				symbol = "O"
 			}
-
 			for i := len(models.CurrentGame.Grid) - 1; i >= 0; i-- {
 				if models.CurrentGame.Grid[i][column] == "" {
 					models.CurrentGame.Grid[i][column] = symbol

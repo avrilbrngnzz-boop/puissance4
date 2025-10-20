@@ -8,5 +8,8 @@ Comme fonctionnalités nous aurons :
 -Bouton rematch et gestion des scores
 -Détection automatique de victoire 
 
-Pour pouvoir lancer le jeu vous devez écrire la commande suivante dans le terminal de Visual Studio Code: go run main.go
+Pour pouvoir lancer le jeu vous devez écrire la commande suivante dans le terminal de Visual Studio Code après avoir cloné le repo?
+Ce qui nous donne :
+git clone https://github.com/avrilbrngnzz-boop/puissance4.git
+go run main.go
 Le jeu sera accessible sur : http://localhost:8080
